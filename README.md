@@ -20,10 +20,9 @@
 	* You can edit Your Parent menu name in the submenu using 
 
 ```php
-
-		// For Renaming Current Menu In the Child Menu
-        global $submenu;
-        $submenu['my-plugin-menu'][0][0] = "Dashboard";
+// For Renaming Current Menu In the Child Menu
+global $submenu;
+$submenu['my-plugin-menu'][0][0] = "Dashboard";
 ```
 	* Show How can you write OOP based php code Using Design patterns
 	* It has Pretty much Everythign What you needs
