@@ -275,7 +275,7 @@ th, td {
 }
 
 a{
-  text-decoration: none;
+  cursor: pointer;
 }
 
 
@@ -332,4 +332,22 @@ a{
 
 .dataTables_length select{
   min-width: 80px !important;
+}
+.pointer{
+  cursor: pointer;
+}
+
+.wl_beauti_table {
+    border-collapse: collapse;
+    width: 100%;
+    border: 1px solid #ddd;
+}
+
+.wl_beauti_table th, td {
+    text-align: left;
+    padding: 8px;
+}
+
+.wl_beauti_table tr:nth-child(even) {
+    background-color: #f2f2f2;
 }
