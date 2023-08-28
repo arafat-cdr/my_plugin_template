@@ -42,6 +42,7 @@ class My_Datables_Table_list{
 		wp_enqueue_script( 'wl_custom_admin_select_2_js' );
 	}
 
+
 	public function add_admin_menu() {
 
 	    add_submenu_page(
@@ -55,6 +56,89 @@ class My_Datables_Table_list{
 
 
 	}
+
+
+	public function set_flash_msg(){
+		$_SESSION['my_custom_plugin_notice'] = 1;
+	}
+
+	public function get_flash_msg(){
+		
+		if( isset( $_SESSION['my_custom_plugin_notice'] ) && $_SESSION['my_custom_plugin_notice'] == 1 ){
+
+			echo '<div class="notice notice-success is-dismissible">
+			        <p>'.__( 'Item deleted successfully', My_Custom_Plugin ).'</p>
+			    </div>';
+
+			// invalidate it
+			$_SESSION['my_custom_plugin_notice'] = 0;
+		}
+	}
+
+	public function handle_delete_item(
+		$delete_key = 'id',
+		$nonce_str = 'delete_item_',
+		$action_name = 'delete_item',
+		$nonce_key = 'nonce' 
+	) {
+	    
+		global $wpdb;
+		$table_name = $wpdb->prefix . 'my_table';
+
+		if (isset($_GET['action']) && $_GET['action'] === $action_name && isset($_GET[$delete_key]) && isset($_GET[$nonce_key])) 
+		{
+
+		    // Check if the nonce is valid
+		    if ( wp_verify_nonce( $_GET[$nonce_key], $nonce_str . $_GET[$delete_key] ) ) {
+
+		        $key = intval($_GET[$delete_key]);
+
+		        // Delete the item from the database table
+		        $result = $wpdb->delete($table_name, array($delete_key => $key));
+
+		        if ($result !== false) {
+		            // Deletion successful
+		            // Make session base Admin Notice
+		            $this->set_flash_msg();
+		            wp_safe_redirect(wp_get_referer());
+		            exit;
+		        } else {
+		            // Deletion failed
+		            wp_die('Error deleting item');
+		        }
+		    } else {
+		        // Nonce verification failed
+		        wp_die('Nonce verification failed');
+		    }
+		}
+
+		// die('Debug::Query Parameter Not Match');
+
+	}
+
+	public function build_query_for_action(
+		$custom_admin_page_slug,
+		$action_key_val,
+		$action_key_name  = 'id',
+		$nonce_str = 'delete_item_',
+		$action_name = 'delete_item',
+		$nonce_key = 'nonce'
+	){
+
+		$nonce = wp_create_nonce($nonce_str . $action_key_val);
+
+		$query_str = add_query_arg(
+		    array(
+		        $action_key_name => $action_key_val,
+		        $nonce_key => $nonce
+		    ),
+		    admin_url("admin.php?page=$custom_admin_page_slug&action=$action_name") // Adjust the URL according to your use case
+		);
+
+		return $query_str;
+
+	}
+
 
 	function generate_sample_data($count = 50) {
 	    $data = array();
@@ -78,6 +162,9 @@ class My_Datables_Table_list{
 
 	public function render_table_list_page(){
 		
+		$this->get_flash_msg();
+		$this->handle_delete_item();
+
 		$data = $this->generate_sample_data();
 ?>
 
@@ -94,6 +181,7 @@ class My_Datables_Table_list{
                     <th>Email</th>
                     <th>City</th>
                     <th>Country</th>
+                    <th>actions</th>
                 </tr>         
             </thead>
 
@@ -102,11 +190,24 @@ class My_Datables_Table_list{
             	<?php
             		if( $data ){
             			foreach( $data as $k => $v ){
+
+            				$id = $v['email'];
+            				$delete_url = $this->build_query_for_action( 'my-plugin-admin-page-slug', $id );
+
             				echo '<tr>';
             				echo '<td>'.$v['name'].'</td>';
             				echo '<td>'.$v['email'].'</td>';
             				echo '<td>'.$v['city'].'</td>';
             				echo '<td>'.$v['country'].'</td>';
+            				echo '<td>';
+            				?>
+
+            				<a href="<?php echo $delete_url; ?>"><button class="text-red pointer" onclick="return confirm('You want to delete this?')">Delete</button></a>
+            				<a href="#"><button class="text-green pointer">Edit</button></a>
+            				<a href="#"><button class="text-green pointer">View Details</button></a>
+
+            				<?php
+            				echo '</td>';
             				echo '</tr>';
             			}
             		}

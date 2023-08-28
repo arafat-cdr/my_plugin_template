@@ -54,6 +54,13 @@ require_once My_Custom_Plugin_DIR_PATH . 'classes/class-my-page-template-handler
 
 // Hook callback
 
+# For supporting Session in My plugin Code
+function my_plugin_name_session_start() {
+    if(!session_id()) {
+        session_start();
+    }
+}
+
 function plugin_activation(){
     
     $plugin_db = Plugin_Db::get_instance();
@@ -127,11 +134,16 @@ function run_my_custom_plugin() {
 
 // Hooks
 
-
+// Here priority 1 is import bcs wp do not
+// Has support of session and if you do it
+// without init wp can destroy you session
+add_action('init', 'my_plugin_name_session_start', 1);
 register_activation_hook(__FILE__, 'plugin_activation');
 add_action('plugins_loaded', 'run_my_custom_plugin');
 
-
+// Use any of this below hook for checking wc after order
+// add_action('woocommerce_checkout_order_processed', 'wl_test_now');
+// add_action('woocommerce_thankyou', 'wl_test_now');
 
 // Shortcodes
 

@@ -24,6 +24,87 @@ class My_Custom_Setting_List_Table extends WP_List_Table
         ));
     }
 
+    public function set_flash_msg(){
+        $_SESSION['my_custom_plugin_notice'] = 1;
+    }
+
+    public function get_flash_msg(){
+        
+        if( isset( $_SESSION['my_custom_plugin_notice'] ) && $_SESSION['my_custom_plugin_notice'] == 1 ){
+
+            echo '<div class="notice notice-success is-dismissible">
+                    <p>'.__( 'Item deleted successfully', My_Custom_Plugin ).'</p>
+                </div>';
+
+            // invalidate it
+            $_SESSION['my_custom_plugin_notice'] = 0;
+        }
+    }
+
+    public function handle_delete_item(
+        $delete_key = 'id',
+        $nonce_str = 'delete_item_',
+        $action_name = 'delete_item',
+        $nonce_key = 'nonce' 
+    ) {
+        
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'my_table';
+
+        if (isset($_GET['action']) && $_GET['action'] === $action_name && isset($_GET[$delete_key]) && isset($_GET[$nonce_key])) 
+        {
+
+            // Check if the nonce is valid
+            if ( wp_verify_nonce( $_GET[$nonce_key], $nonce_str . $_GET[$delete_key] ) ) {
+
+                $key = intval($_GET[$delete_key]);
+
+                // Delete the item from the database table
+                $result = $wpdb->delete($table_name, array($delete_key => $key));
+
+                if ($result !== false) {
+                    // Deletion successful
+                    // Make session base Admin Notice
+                    $this->set_flash_msg();
+                    wp_safe_redirect(wp_get_referer());
+                    exit;
+                } else {
+                    // Deletion failed
+                    wp_die('Error deleting item');
+                }
+            } else {
+                // Nonce verification failed
+                wp_die('Nonce verification failed');
+            }
+        }
+
+        // die('Debug::Query Parameter Not Match');
+
+    }
+
+    public function build_query_for_action(
+        $custom_admin_page_slug,
+        $action_key_val,
+        $action_key_name  = 'id',
+        $nonce_str = 'delete_item_',
+        $action_name = 'delete_item',
+        $nonce_key = 'nonce'
+    ){
+
+        $nonce = wp_create_nonce($nonce_str . $action_key_val);
+
+        $query_str = add_query_arg(
+            array(
+                $action_key_name => $action_key_val,
+                $nonce_key => $nonce
+            ),
+            admin_url("admin.php?page=$custom_admin_page_slug&action=$action_name") // Adjust the URL according to your use case
+        );
+
+        return $query_str;
+
+    }
+
     function get_bulk_actions()
     {
         $actions = array(
@@ -43,6 +124,9 @@ class My_Custom_Setting_List_Table extends WP_List_Table
                     $wpdb->delete($table_name, array('id' => $id), array('%d'));
                 }
             }
+            
+            // Make session base Admin Notice
+            $this->set_flash_msg();
 
             $redirect_url =  get_admin_url(null, 'admin.php?page=my-plugin-setting');
             wp_safe_redirect($redirect_url);
@@ -61,11 +145,18 @@ class My_Custom_Setting_List_Table extends WP_List_Table
             case 'city':
                 return $item[$column_name];
             case 'action':
+
+                # this will build with nonce
+                $delete_url = $this->build_query_for_action( 'my-plugin-settings', $item['id'] );
+
                 $actions = array(
                     'view' => sprintf('<a href="?page=my-plugin-settings&action=view&id=%s">View</a>', $item['id']),
                     'edit' => sprintf('<a href="?page=my-plugin-settings&action=edit&id=%s">Edit</a>', $item['id']),
+                    'delete' => sprintf('<a href="%s">Delete</a>', $delete_url),
                 );
-                return sprintf('%s | %s', $actions['view'], $actions['edit']);
+
+                return sprintf('%s | %s | %s', $actions['view'], $actions['edit'], $actions['delete']);
+
             default:
                 return $item[$column_name];
         }
@@ -179,6 +270,14 @@ class My_Custom_Setting_List_Table extends WP_List_Table
 
     function prepare_items()
     {
+
+        #---------------------------------------------
+        // Show my session base flush msg
+        $this->get_flash_msg();
+        // My single Delete Items
+        $this->handle_delete_item();
+        #---------------------------------------------
+
         $table_data = $this->get_table_data();
 
         # Call to process bulk actions
