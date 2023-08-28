@@ -96,7 +96,9 @@ class My_Datables_Table_list{
 		        // Delete the item from the database table
 		        $result = $wpdb->delete($table_name, array($delete_key => $key));
 
-		        if ($result !== false) {
+		        // pr( $result ); die('on result');
+
+		        if ($result) {
 		            // Deletion successful
 		            // Make session base Admin Notice
 		            $this->set_flash_msg();
@@ -192,7 +194,7 @@ class My_Datables_Table_list{
             			foreach( $data as $k => $v ){
 
             				$id = $v['email'];
-            				$delete_url = $this->build_query_for_action( 'my-plugin-admin-page-slug', $id );
+            				$delete_url = $this->build_query_for_action( 'my-plugin-data-table', $id );
 
             				echo '<tr>';
             				echo '<td>'.$v['name'].'</td>';

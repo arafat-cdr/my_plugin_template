@@ -41,6 +41,8 @@ require_once( My_Custom_Plugin_DIR_PATH.'classes/class_wp_setting_list_table.php
 require_once( My_Custom_Plugin_DIR_PATH.'classes/My_Datables_Table_list.php' );
 
 require_once( My_Custom_Plugin_DIR_PATH.'classes/My_Plugin_Settings.php' );
+require_once( My_Custom_Plugin_DIR_PATH.'classes/class-search-by-id-page.php' );
+
 require_once( My_Custom_Plugin_DIR_PATH.'classes/My_Custom_Plugin.php' );
 
 // For Ajax Loading
@@ -95,6 +97,7 @@ function run_my_custom_plugin() {
     // example of datatale
 
     My_Datables_Table_list::get_instance();
+    Search_By_ID_Page::get_instance();
 
     // end example of datatable
 
