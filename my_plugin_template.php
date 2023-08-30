@@ -36,17 +36,20 @@ define('My_Custom_Plugin_LOGO', My_Custom_Plugin_BASE_URL . '/assets/my-logo.png
 // Helpers Goes Here
 
 if( !function_exists('pr') ){
-    function pr( $data, $die = false ){
+    
+    function pr( $data, $dead = false ){
+        
         echo '<pre>';
         print_r( $data );
         echo '</pre>';
-    }
 
-    if( $die ){
-        die($die);
+        if( $die ){
+            die($die);
+        }
     }
 
 }
+
 
 
 // Includes 
