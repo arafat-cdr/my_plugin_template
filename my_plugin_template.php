@@ -33,6 +33,22 @@ define('My_Custom_Plugin_BASE_URL', plugin_dir_url(My_Custom_Plugin_FILE));
 define('My_Custom_Plugin_LOGO', My_Custom_Plugin_BASE_URL . '/assets/my-logo.png');
 
 
+// Helpers Goes Here
+
+if( !function_exists('pr') ){
+    function pr( $data, $die = false ){
+        echo '<pre>';
+        print_r( $data );
+        echo '</pre>';
+    }
+
+    if( $die ){
+        die($die);
+    }
+
+}
+
+
 // Includes 
 require_once( My_Custom_Plugin_DIR_PATH.'classes/Plugin_Db.php' );
 require_once( My_Custom_Plugin_DIR_PATH.'classes/class_wp_setting_list_table.php' );
