@@ -54,6 +54,7 @@ class My_Plugin_Settings {
         $custom_table->search_box('Search', 'my-table-search');
         echo wp_nonce_field('my-custom-table-search', 'my-table-search-nonce', false, false);
 
+
         $custom_table->display();
 
         echo '</form>';
@@ -72,6 +73,11 @@ class My_Plugin_Settings {
                 <input type="text" name="name" id="name">
                 <label for="img">Image:</label>
                 <input type="file" name="img" id="img">
+
+                <div class="for_country_code_input_container">
+                    <span class="country_code_input_button">+966</span>
+                    <input class="country_input_field" name="mobile" value="" type="text"  required autofocus placeholder="i.e 543216788" >
+                </div>
 
                 <fieldset>
                     <label> <strong>City</strong> </label>

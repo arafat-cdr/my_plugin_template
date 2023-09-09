@@ -352,3 +352,32 @@ a{
 .wl_beauti_table tr:nth-child(even) {
     background-color: #f2f2f2;
 }
+
+.mbtm_5{
+  margin-bottom:10px !important;
+}
+
+.for_country_code_input_container {
+  display: flex;
+  align-items: center;
+  width: 317px;
+}
+
+.country_code_input_button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 2px 12px;
+    cursor: pointer;
+    height: 34px;
+}
+
+.country_input_field {
+    flex: 1;
+    padding: 8px !important;
+    outline: none !important;
+    padding-top: 5px !important;
+    border: 2px solid;
+    height: 36px;
+    margin-top: 6px !important;
+}

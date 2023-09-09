@@ -89,6 +89,23 @@ function plugin_activation(){
 
 }
 
+function my_custom_plugin_delete_old_db(){
+        
+        global $wpdb;
+
+        $table_name = $wpdb->prefix . 'my_table';
+
+       // Check if the table exists
+       if ($wpdb->get_var("SHOW TABLES LIKE '$table_name'") == $table_name) {
+           // Table exists, so we can safely delete it
+           $sql = "DROP TABLE $table_name";
+           $wpdb->query($sql);
+       }
+
+
+}
+
+
 // -----------------------------------------------------
 // For Ajax Loading
 // -----------------------------------------------------
@@ -154,6 +171,8 @@ function run_my_custom_plugin() {
 }
 
 
+
+
 // Hooks
 
 // Here priority 1 is import bcs wp do not
@@ -161,6 +180,8 @@ function run_my_custom_plugin() {
 // without init wp can destroy you session
 add_action('init', 'my_plugin_name_session_start', 1);
 register_activation_hook(__FILE__, 'plugin_activation');
+// call on plugin deactivate
+register_deactivation_hook(__FILE__, 'my_custom_plugin_delete_old_db');
 add_action('plugins_loaded', 'run_my_custom_plugin');
 
 // Use any of this below hook for checking wc after order

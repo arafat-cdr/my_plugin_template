@@ -24,13 +24,17 @@ class My_Custom_Plugin {
     }
 
     public function enqueue_admin_scripts() {
+        
         wp_enqueue_script('jquery');
+
         wp_enqueue_style('admin-style', My_Custom_Plugin_BASE_URL . 'assets/css/admin/admin-style.css');
         wp_enqueue_script('admin-script', My_Custom_Plugin_BASE_URL . 'assets/js/admin/admin-script.js', array('jquery'), null, true);
     }
 
     public function enqueue_frontend_scripts() {
+        
         wp_enqueue_script('jquery');
+
         wp_enqueue_style('frontend-style', My_Custom_Plugin_BASE_URL . 'assets/css/frontend-style.css');
         wp_enqueue_script('frontend-script', My_Custom_Plugin_BASE_URL . 'assets/js/frontend-script.js', array('jquery'), null, true);
     }
