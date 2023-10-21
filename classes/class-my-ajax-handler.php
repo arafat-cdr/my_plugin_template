@@ -24,8 +24,10 @@ class My_Ajax_Handler {
     }
 
     public function enqueue_ajax_scripts() {
-        wp_enqueue_script('my-ajax-script', My_Custom_Plugin_DIR_PATH . 'js/ajax-script.js', array('jquery'), '1.0', true);
+        wp_enqueue_script('my-ajax-script', My_Custom_Plugin_BASE_URL . 'js/ajax-script.js', array('jquery'), '1.0', true);
         // Pass Ajax Url to script.js
+        // Remember 'my-ajax-script' Both Need to same
+        // other wise will not work
         wp_localize_script('my-ajax-script', 'my_ajax_object', array('ajax_url' => admin_url('admin-ajax.php')));
     }
 
