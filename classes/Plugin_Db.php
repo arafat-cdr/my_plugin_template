@@ -24,7 +24,11 @@ class Plugin_Db {
             id INT NOT NULL AUTO_INCREMENT,
             name VARCHAR(255) NOT NULL,
             city VARCHAR(255) NOT NULL,
-            img VARCHAR(255),
+            company_logo VARCHAR(255) DEFAULT NULL,
+            api_token TEXT DEFAULT NULL,
+            user_id VARCHAR(255) DEFAULT NULL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             PRIMARY KEY (id)
         ) $charset_collate;";
 
